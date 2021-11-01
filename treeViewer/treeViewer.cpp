@@ -267,10 +267,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
                 
                 srand(1008);
-                for (int loopCnt = 0; loopCnt < 300 ; ++loopCnt ) {
+                for (int loopCnt = 0; loopCnt < 1 ; ++loopCnt ) {
                     delete(tree);
                     tree = TREE_CLASS::test();
                 }
+
+                for(int i=0 ; i<100 ; i++){
+                    int result = tree->find(i);
+                    wprintf(L"find %d, result: %d\n",i, result);
+                }
+
 
                 #if defined(SPEED_TEST)
                     sp->printToFile();
@@ -314,7 +320,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     case WM_DESTROY:
         delete(tree);
-        delete(sp);
+        #if defined(SPEED_TEST)
+            delete(sp);
+        #endif
         PostQuitMessage(0);
         break;
     default:

@@ -1,5 +1,10 @@
 #pragma once
 
+
+bool lessCompare(int a, int b) {
+	return a < b;
+}
+
 class SimpleProfiler;
 
 #if defined(SPEED_TEST)
@@ -41,6 +46,7 @@ public:
 
 	CRedBlackTree() {
 		_root = new stNode(0, false, true);
+		compareFunc = lessCompare;
 	}
 
 	~CRedBlackTree() {
@@ -76,8 +82,8 @@ public:
 			}
 
 			stNode* node = _root;
-			while (node->_data != data) {
-				if (node->_data < data) {
+			while (true) {
+				if (compareFunc(node->_data, data) == true) {
 					if (node->_right->_isNill == true) {
 						delete(node->_right);
 						node->_right = newNode;
@@ -94,7 +100,7 @@ public:
 					}
 					node = node->_right;
 				}
-				else if (node->_data > data) {
+				else if (compareFunc(data, node->_data) == true) {
 					if (node->_left->_isNill == true) {
 						delete(node->_left);
 						node->_left = newNode;
@@ -111,7 +117,11 @@ public:
 					}
 					node = node->_left;
 				}
+				else{
+					break;
+				}
 			}
+
 			delete(newNode);
 		} while (false);
 
@@ -133,11 +143,11 @@ public:
 
 		while ((*node)->_isNill == false) {
 
-			if ((*node)->_data < data) {
+			if (compareFunc((*node)->_data, data) == true) {
 				//right
 				node = &(*node)->_right;
 			}
-			else if ((*node)->_data > data) {
+			else if (compareFunc(data, (*node)->_data) == true) {
 				//left
 				node = &(*node)->_left;
 			}
@@ -160,6 +170,34 @@ public:
 			sp->profileEnd("erase");
 		#endif
 	}
+
+	T find(T data){
+		
+		stNode* node = _root;
+
+		while(node != nullptr){
+
+			if(node->_isNill == true){
+				return NULL;
+			}
+
+			if(compareFunc(data, node->_data) == true){
+				// data가 더 작음
+				node = node->_left;
+			} else if(compareFunc(node->_data, data) == true){
+				// data가 더 큼
+				node = node->_right;
+			} else {
+				// 같음
+				return node->_data;
+			}
+
+		}
+
+		return NULL;
+
+	}
+	
 
 #ifdef _WINDOWS_
 
@@ -306,6 +344,7 @@ public:
 		srand(seed);
 
 		tree = new CRedBlackTree();
+		tree->compareFunc = lessCompare;
 		addNumList = new std::vector<int>();
 		eraseIndexList = new std::vector<int>();
 		ableNumList = new std::vector<int>();
@@ -432,10 +471,13 @@ public:
 
 	}
 
+	bool (*compareFunc)(T a, T b);
+
 #endif
 
 private:
 
+	
 	stNode* _root;
 
 	stNode* eraseNode(stNode** node, bool* isRed) {
@@ -526,10 +568,6 @@ private:
 
 
 	void insertBalance(stNode* node) {
-
-		if (node->_data == 3) {
-			int k = 3;
-		}
 
 		// 노드가 루트면 탈출
 		if (node == _root) {
