@@ -278,6 +278,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="ObjectFreeList.h" />
     <ClInclude Include="RedBlackTree.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SimpleProfiler.h" />
