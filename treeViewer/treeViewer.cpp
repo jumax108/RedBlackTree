@@ -267,14 +267,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
                 
                 srand(1008);
-                for (int loopCnt = 0; loopCnt < 1 ; ++loopCnt ) {
+                for (int loopCnt = 0; loopCnt < 1000 ; ++loopCnt ) {
                     delete(tree);
                     tree = TREE_CLASS::test();
-                }
 
-                for(int i=0 ; i<100 ; i++){
-                    int result = tree->find(i);
-                    wprintf(L"find %d, result: %d\n",i, result);
+                    for (int i = 0; i < 100; i++) {
+                        int result = tree->find(i);
+                        wprintf(L"find %d, result: %d\n", i, result);
+                    }
+
+                    int* treeArr = tree->inorder();
+                    int nodeNum = tree->getNodeNum();
+                    for (int nodeCnt = 0; nodeCnt < nodeNum; nodeCnt++) {
+                        wprintf(L"%d ", treeArr[nodeCnt]);
+                    }
+
                 }
 
 
