@@ -116,6 +116,9 @@ private:
 
 };
 
+
+#ifndef _REDBLACKTREELESS_
+#define _REDBLACKTREELESS_
 class CRedBlackTreeLess{
 public:
 	template<typename T>
@@ -123,6 +126,7 @@ public:
 		return left < right;
 	}
 };
+#endif
 
 template <typename T, class C>
 CRedBlackTree<T, C>::stNode::stNode(T data, CObjectFreeList<stNode>* freeList, bool isRed, bool isNill, stNode* parent){
@@ -206,7 +210,15 @@ void CRedBlackTree<T, C>::insert(T data) {
 					//delete(node->_right);
 					node->_right = newNode;
 					newNode->_parent = node;;
+					#if defined(SPEED_TEST)
+						sp->profileBegin("insertBalance");
+					#endif
+
 					insertBalance(newNode);
+
+					#if defined(SPEED_TEST)
+						sp->profileEnd("insertBalance");
+					#endif
 
 					_nodeNum += 1;
 
@@ -226,7 +238,15 @@ void CRedBlackTree<T, C>::insert(T data) {
 					//delete(node->_left);
 					node->_left = newNode;
 					newNode->_parent = node;
+#if defined(SPEED_TEST)
+					sp->profileBegin("insertBalance");
+#endif
+
 					insertBalance(newNode);
+
+#if defined(SPEED_TEST)
+					sp->profileEnd("insertBalance");
+#endif
 
 					_nodeNum += 1;
 
@@ -282,7 +302,16 @@ void CRedBlackTree<T, C>::erase(T data) {
 			stNode* erasedNode = eraseNode(node, &isRed);
 			_nodeNum -= 1;
 			if (isRed == false) {
+
+#if defined(SPEED_TEST)
+				sp->profileBegin("eraseBalance");
+#endif
+
 				eraseBalance(erasedNode);
+
+#if defined(SPEED_TEST)
+				sp->profileEnd("eraseBalance");
+#endif
 
 				#if defined(LOGIC_TEST)
 					diagnosis(_root);
@@ -1342,16 +1371,16 @@ void CRedBlackTree<T, C>::clear(){
 		erase(_root->_data);
 	}
 
-	nodeFreeList->freeObejct(_root->_left);
-	nodeFreeList->freeObejct(_root->_right);
-	nodeFreeList->freeObejct(_root);
+	nodeFreeList->freeObject(_root->_left);
+	nodeFreeList->freeObject(_root->_right);
+	nodeFreeList->freeObject(_root);
 
 	//delete(_root->_left);
 	//delete(_root->_right);
 	//delete(_root);
 	
 	_root = nodeFreeList->allocObject();// new stNode(0, false, true);
-	new (_root) stNode(0, false, true);
+	new (_root) stNode(0, nodeFreeList, false, true);
 
 	_nodeNum = 0;
 	

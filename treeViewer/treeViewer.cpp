@@ -4,17 +4,20 @@
 #include "framework.h"
 #include "treeViewer.h"
 
+#include "linkedList.h"
 #include "ObjectFreeList.h"
 #include "SimpleProfiler.h"
 #include "RedBlackTree.h"
+#include "RedBlackTree_Multi.h"
 
 #if defined(SPEED_TEST)
     SimpleProfiler* sp = nullptr;
 #endif
 
-CObjectFreeList<CRedBlackTree<int>::stNode>* nodeFreeList;
 
 using TREE_CLASS = CRedBlackTree<int>;
+
+CObjectFreeList<TREE_CLASS::stNode>* nodeFreeList;
 
 TREE_CLASS* tree;
 
@@ -274,7 +277,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 #endif
                 
                 srand(1008);
-                for (int loopCnt = 0; loopCnt < 1000 ; ++loopCnt ) {
+
+                int loopNum = 1000;
+
+                for (int loopCnt = 0; loopCnt < loopNum ; ++loopCnt ) {
                     //delete(tree);
                     TREE_CLASS::test(tree);
 
@@ -288,6 +294,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     for (int nodeCnt = 0; nodeCnt < nodeNum; nodeCnt++) {
                        // wprintf(L"%d ", treeArr[nodeCnt]);
                     }
+
+                    if(loopCnt+1 == loopNum){
+                        break;
+                    }
+                    tree->clear();
 
                 }
 

@@ -139,7 +139,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="RedBlackTree.h" />
+    <ClInclude Include="linkedList.h" />
+    <ClInclude Include="RedBlackTree_Multi.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
